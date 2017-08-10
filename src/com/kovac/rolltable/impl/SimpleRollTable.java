@@ -1,7 +1,11 @@
 package com.kovac.rolltable.impl;
 
+import java.util.concurrent.Callable;
+
 import com.kovac.rolltable.RollTableInvalidException;
+import com.kovac.rolltable.interfaces.RollTable;
 import com.kovac.rolltable.utils.DiceUtils;
+import com.kovac.rolltable.utils.RollTableCallable;
 
 public class SimpleRollTable<E> extends AbstractRollTable<E> {
 
@@ -33,6 +37,16 @@ public class SimpleRollTable<E> extends AbstractRollTable<E> {
 			rolls[i] = i + getNbDices();
 		}
 		return rolls;
+	}
+
+	@Override
+	protected Callable<E> getSimpleRollResultCallable(E rollResult) {
+		return new RollTableCallable<>(rollResult);
+	}
+
+	@Override
+	protected Callable<E> getLinkedRollResultCallable(RollTable<E> linkedRollTable) {
+		return new RollTableCallable<>(linkedRollTable);
 	}
 
 }

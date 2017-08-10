@@ -7,7 +7,6 @@ import java.util.concurrent.Callable;
 
 import com.kovac.rolltable.RollTableInvalidException;
 import com.kovac.rolltable.interfaces.RollTable;
-import com.kovac.rolltable.utils.RollTableCallable;
 
 public abstract class AbstractRollTable<E> implements RollTable<E> {
 
@@ -48,17 +47,17 @@ public abstract class AbstractRollTable<E> implements RollTable<E> {
 		int maxFixed = maxRoll > minRoll ? maxRoll : minRoll;
 		checkBounds(minFixed, maxFixed);
 		for (int i = minFixed ; i <= maxFixed ; i++) {
-			this.rollResultsMap.put(i, new RollTableCallable<>(rollResult));
+			this.rollResultsMap.put(i, getSimpleRollResultCallable(rollResult));
 		}
 	}
 
 	@Override
-	public void linkOtherTable(int minRoll, int maxRoll, RollTable<E> otherTable) throws RollTableInvalidException {
+	public void linkOtherTable(int minRoll, int maxRoll, RollTable<E> otherRollTable) throws RollTableInvalidException {
 		int minFixed = minRoll < maxRoll ? minRoll : maxRoll;
 		int maxFixed = maxRoll > minRoll ? maxRoll : minRoll;
 		checkBounds(minFixed, maxFixed);
 		for (int i = minFixed ; i <= maxFixed ; i++) {
-			this.rollResultsMap.put(i, new RollTableCallable<>(otherTable));
+			this.rollResultsMap.put(i, getLinkedRollResultCallable(otherRollTable));
 		}
 	}
 
@@ -110,6 +109,10 @@ public abstract class AbstractRollTable<E> implements RollTable<E> {
 		}
 		return true;
 	}
+
+	protected abstract Callable<E> getSimpleRollResultCallable(E rollResult);
+
+	protected abstract Callable<E> getLinkedRollResultCallable(RollTable<E> linkedRollTable);
 
 	protected abstract int[] getPossibleRolls();
 
