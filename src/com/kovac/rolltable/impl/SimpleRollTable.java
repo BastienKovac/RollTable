@@ -3,9 +3,9 @@ package com.kovac.rolltable.impl;
 import java.util.concurrent.Callable;
 
 import com.kovac.rolltable.RollTableInvalidException;
+import com.kovac.rolltable.impl.callables.RollTableCallable;
 import com.kovac.rolltable.interfaces.RollTable;
 import com.kovac.rolltable.utils.DiceUtils;
-import com.kovac.rolltable.utils.RollTableCallable;
 
 public class SimpleRollTable<E> extends AbstractRollTable<E> {
 

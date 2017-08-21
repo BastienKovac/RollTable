@@ -1,5 +1,7 @@
 package com.kovac.rolltable.impl;
 
+import java.util.Collections;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -10,8 +12,8 @@ import com.kovac.rolltable.interfaces.RollTable;
 
 public abstract class AbstractRollTable<E> implements RollTable<E> {
 
-	private static final int DEFAULT_DICE_NUMBER = 1;
-	private static final int DEFAULT_DICE_SIZE = 10;
+	protected static final int DEFAULT_DICE_NUMBER = 1;
+	protected static final int DEFAULT_DICE_SIZE = 10;
 
 	private final String name;
 	private final int diceSize;
@@ -61,7 +63,7 @@ public abstract class AbstractRollTable<E> implements RollTable<E> {
 		}
 	}
 
-	private void checkBounds(int minFixed, int maxFixed) throws RollTableInvalidException {
+	protected void checkBounds(int minFixed, int maxFixed) throws RollTableInvalidException {
 		if (minFixed < rollResultsMap.firstKey() || maxFixed > rollResultsMap.lastKey()) {
 			throw new RollTableInvalidException();
 		}
@@ -93,12 +95,20 @@ public abstract class AbstractRollTable<E> implements RollTable<E> {
 		return name;
 	}
 
+	protected Map<Integer, Callable<E>> getRollResultsMap() {
+		return Collections.unmodifiableMap(rollResultsMap);
+	}
+
 	protected int getDiceSize() {
 		return diceSize;
 	}
 
 	protected int getNbDices() {
 		return nbDices;
+	}
+
+	protected int getMaxDiceRoll() {
+		return getDiceSize() * getNbDices();
 	}
 
 	private boolean isRollTableValid() {

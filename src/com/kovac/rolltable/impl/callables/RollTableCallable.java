@@ -1,4 +1,4 @@
-package com.kovac.rolltable.utils;
+package com.kovac.rolltable.impl.callables;
 
 import java.util.concurrent.Callable;
 
