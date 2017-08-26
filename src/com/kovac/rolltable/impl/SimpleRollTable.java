@@ -1,52 +1,70 @@
 package com.kovac.rolltable.impl;
 
-import java.util.concurrent.Callable;
-
 import com.kovac.rolltable.RollTableInvalidException;
-import com.kovac.rolltable.impl.callables.RollTableCallable;
+import com.kovac.rolltable.impl.results.RollTableResult;
 import com.kovac.rolltable.interfaces.RollTable;
-import com.kovac.rolltable.utils.DiceUtils;
+import com.kovac.rolltable.utils.dices.Rollable;
+import com.kovac.rolltable.utils.range.RangeMap;
 
-public class SimpleRollTable<E> extends AbstractRollTable<E> {
+public class SimpleRollTable<E> implements RollTable<E> {
 
-	public SimpleRollTable(String name) throws RollTableInvalidException  {
-		super(name);
-	}
+	private final String name;
+	private final int minRoll, maxRoll;
+	private final Rollable rollable;
+	private final RangeMap<RollTableResult<E>> resultsMap;
 
-	public SimpleRollTable(String name, int diceSize) throws RollTableInvalidException  {
-		super(name, diceSize);
-	}
 
-	public SimpleRollTable(String name, int nbDices, int diceSize) throws RollTableInvalidException {
-		super(name, nbDices, diceSize);
+	public SimpleRollTable(String name, Rollable rollable, RangeMap<RollTableResult<E>> resultsMap) throws RollTableInvalidException {
+		checkValidity(rollable, resultsMap);
+		this.name = name;
+		this.rollable = rollable;
+		this.minRoll = rollable.getMinRoll();
+		this.maxRoll = rollable.getMaxRoll();
+		this.resultsMap = resultsMap;
 	}
 
 	@Override
-	protected int getRollTableDice() {
-		int sum = 0;
-		for (int i = 0 ; i < getNbDices() ; i++) {
-			sum += DiceUtils.roll(getDiceSize());
+	public E rollOnTable() {
+		return getResultForRoll(rollable.roll());
+	}
+
+	@Override
+	public String getName() {
+		return name;
+	}
+
+	@Override
+	public String toString() {
+		return name + "\n" + resultsMap.toString();
+	}
+
+	protected void checkValidity(Rollable rollable, RangeMap<?> resultsMap) throws RollTableInvalidException {
+		if (rollable == null) {
+			throw new RollTableInvalidException("The given Rollable is null");
 		}
-		return sum;
+		checkRangeMapFull(resultsMap);
 	}
 
-	@Override
-	protected int[] getPossibleRolls() {
-		int[] rolls = new int[getNbDices() * getDiceSize() - (getNbDices() - 1)];
-		for (int i = 0 ; i < rolls.length ; i++) {
-			rolls[i] = i + getNbDices();
+	protected final void checkRangeMapFull(RangeMap<?> rangeMap) throws RollTableInvalidException {
+		if (!rangeMap.isRangeMapFull(getMinRoll(), getMaxRoll())) {
+			throw new RollTableInvalidException("The given range map isn't complete");
 		}
-		return rolls;
 	}
 
-	@Override
-	protected Callable<E> getSimpleRollResultCallable(E rollResult) {
-		return new RollTableCallable<>(rollResult);
+	protected final E getResultForRoll(int roll) {
+		return resultsMap.getAssociatedResult(roll).getRollResult();
 	}
 
-	@Override
-	protected Callable<E> getLinkedRollResultCallable(RollTable<E> linkedRollTable) {
-		return new RollTableCallable<>(linkedRollTable);
+	protected final Rollable getRollable() {
+		return rollable;
+	}
+
+	protected final int getMinRoll() {
+		return minRoll;
+	}
+
+	protected final int getMaxRoll() {
+		return maxRoll;
 	}
 
 }
