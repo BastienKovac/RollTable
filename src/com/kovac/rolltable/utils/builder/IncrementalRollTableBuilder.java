@@ -14,7 +14,7 @@ public class IncrementalRollTableBuilder<E> extends SimpleRollTableBuilder<E> {
 
 	@Override
 	public IncrementalRollTableBuilder<E> withIncrement(int lower, int upper, int increment) throws RangeOverlapException {
-		incrementMap.addRangeValueCombo(new Range(lower, upper), upper);
+		incrementMap.addRangeValueCombo(new Range(lower, upper), increment);
 		return this;
 	}
 
