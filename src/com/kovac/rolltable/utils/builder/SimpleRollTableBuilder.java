@@ -6,6 +6,7 @@ import com.kovac.rolltable.impl.results.LinkRollTableResult;
 import com.kovac.rolltable.impl.results.RollTableResult;
 import com.kovac.rolltable.impl.results.SimpleRollTableResult;
 import com.kovac.rolltable.interfaces.RollTable;
+import com.kovac.rolltable.utils.dices.ParserRollable;
 import com.kovac.rolltable.utils.dices.Rollable;
 import com.kovac.rolltable.utils.range.Range;
 import com.kovac.rolltable.utils.range.RangeMap;
@@ -37,6 +38,12 @@ public class SimpleRollTableBuilder<E> implements RollTableBuilder<E> {
 	@Override
 	public RollTableBuilder<E> withRollable(Rollable rollable) {
 		this.rollable = rollable;
+		return this;
+	}
+
+	@Override
+	public RollTableBuilder<E> withRollable(String rollableToParse) throws IllegalArgumentException {
+		this.rollable = ParserRollable.parseRollable(rollableToParse);
 		return this;
 	}
 

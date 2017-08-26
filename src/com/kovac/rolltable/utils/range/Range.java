@@ -32,8 +32,8 @@ public class Range implements Comparable<Range> {
 	}
 
 	public boolean overlaps(Range other) {
-		return minRange <= other.maxRange && maxRange <= other.minRange;
-	}
+		return Math.max(minRange, other.minRange) <= Math.min(maxRange, other.maxRange);
+ 	}
 
 	@Override
 	public String toString() {

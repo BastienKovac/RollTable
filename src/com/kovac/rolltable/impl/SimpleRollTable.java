@@ -9,18 +9,15 @@ import com.kovac.rolltable.utils.range.RangeMap;
 public class SimpleRollTable<E> implements RollTable<E> {
 
 	private final String name;
-	private final int minRoll, maxRoll;
 	private final Rollable rollable;
 	private final RangeMap<RollTableResult<E>> resultsMap;
 
 
 	public SimpleRollTable(String name, Rollable rollable, RangeMap<RollTableResult<E>> resultsMap) throws RollTableInvalidException {
-		checkValidity(rollable, resultsMap);
 		this.name = name;
 		this.rollable = rollable;
-		this.minRoll = rollable.getMinRoll();
-		this.maxRoll = rollable.getMaxRoll();
 		this.resultsMap = resultsMap;
+		checkValidity(rollable, resultsMap);
 	}
 
 	@Override
@@ -35,7 +32,7 @@ public class SimpleRollTable<E> implements RollTable<E> {
 
 	@Override
 	public String toString() {
-		return name + "\n" + resultsMap.toString();
+		return name + "\n" + rollable.toString() + "\n" + resultsMap.toString();
 	}
 
 	protected void checkValidity(Rollable rollable, RangeMap<?> resultsMap) throws RollTableInvalidException {
@@ -60,11 +57,11 @@ public class SimpleRollTable<E> implements RollTable<E> {
 	}
 
 	protected final int getMinRoll() {
-		return minRoll;
+		return rollable.getMinRoll();
 	}
 
 	protected final int getMaxRoll() {
-		return maxRoll;
+		return rollable.getMaxRoll();
 	}
 
 }
